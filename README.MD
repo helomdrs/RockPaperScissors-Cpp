@@ -28,6 +28,9 @@ This project was made under the C++ special training made by and for Heloisa Med
 
 ## Version History
 
+* 0.3
+    * Code updated based on peer reviews;
+    * See [commit change](https://github.com/helomdrs/RockPaperScissors-Cpp/commits/master/);
 * 0.2
     * README and LICENSE pages;
     * See [commit change](https://github.com/helomdrs/RockPaperScissors-Cpp/commits/master/);
