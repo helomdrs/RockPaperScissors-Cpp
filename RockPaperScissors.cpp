@@ -65,10 +65,7 @@ static int getPlayerInput(int lastOption)
 
 static bool canInitGame()
 {
-   bool toInitGame = false;
-
-   toInitGame = getPlayerInput(2) == 1;
-
+  const bool toInitGame = getPlayerInput(2) == 1;
    return toInitGame;
 }
 
@@ -76,6 +73,7 @@ static bool canInitGame()
 
 static int getAIMove() 
 {
+    //not the best random option, for further projects look for other libraries
     int aiMove = std::rand() % 3;
     return aiMove;
 }
@@ -174,9 +172,5 @@ int main()
             }
         } while (isGameRunning);
     }
-    else {
-        exit(0);
-    }
-
     return 0;
 }
