@@ -17,9 +17,9 @@ static void printHeader()
     std::cout << "\n";
 }
 
-static void printScore(int* scorePlayer, int* scoreAI)
+static void printScore(int scorePlayer, int scoreAI)
 {
-    std::cout << "                   PLAYER " << *scorePlayer << " x " << *scoreAI << " AI" <<  std::endl;
+    std::cout << "                   PLAYER " << scorePlayer << " x " << scoreAI << " AI" <<  std::endl;
 }
 
 static void printMainMenu() 
@@ -47,12 +47,12 @@ static void clearScreen()
 }
 #pragma endregion
 
-static int getPlayerInput(int maxAmount)
+static int getPlayerInput(int lastOption)
 {
     int input = 0;
     std::cin >> input;
 
-    while (std::cin.fail() || (input > maxAmount || input < 0))
+    while (std::cin.fail() || (input > lastOption || input < 0))
     {
         std::cout << "Invalid input, please type only numbers or choose a valid option above: ";
         std::cin.clear();
@@ -65,114 +65,68 @@ static int getPlayerInput(int maxAmount)
 
 static bool canInitGame()
 {
-    bool toInitGame = false;
+   bool toInitGame = false;
 
-    int option = getPlayerInput(2);
+   toInitGame = getPlayerInput(2) == 1;
 
-    switch (option)
-    {
-    case 1:
-        toInitGame = true;
-        break;
-    case 2:
-        toInitGame = false;
-        break;
-    default:
-        toInitGame = false;
-        break;
-    }
-
-    return toInitGame;
+   return toInitGame;
 }
 
 #pragma region Match Methods
 
 static int getAIMove() 
 {
-    int aiMove = std::rand() % 4;
-
-    if (aiMove > possiblePlays.size())
-    {
-        aiMove = std::rand() % 3;
-    }
-    
+    int aiMove = std::rand() % 3;
     return aiMove;
 }
 
-static int treatMoves(int* playerMove, int* aiMove) 
+//using ENUM because it makes more sense for the code than structs
+enum Result
 {
-    //std::cout << "Player move: " << possiblePlays[*playerMove - 1] << std::endl;
-    //std::cout << "AI move: " << possiblePlays[*aiMove - 1] << std::endl;
+    Draw,
+    PlayerWon,
+    AIWon
+};
 
-    int idxPlayerMove = (*playerMove) - 1;
-    int idxAiMove = (*aiMove) - 1;
+//a copy of a variable costs less memory than a pointer, prefer to use pointers on Objects references
+//if a variable will be modified, use reference (&) instead
+static Result getMatchResult(int playerMove, int aiMove) {
 
-    if (idxPlayerMove < 0) {
-        idxPlayerMove = 0;
+    std::cout << "\nPLAYER - " << possiblePlays[playerMove] << " x " << possiblePlays[aiMove] << " - AI" << std::endl;
+
+    if (playerMove == aiMove) return Result::Draw;
+
+    if (playerMove == 0) {
+        return aiMove == 2 ? Result::PlayerWon : Result::AIWon;
     }
 
-    if (idxAiMove < 0) {
-        idxAiMove = 0;
+    if (playerMove == 1) {
+        return aiMove == 0 ? Result::PlayerWon : Result::AIWon;
     }
 
-    std::cout << "\nPLAYER - " << possiblePlays[idxPlayerMove] << " x " << possiblePlays[idxAiMove] << " - AI"  << std::endl;
-
-    int resultIndex = -1;
-
-    switch (*playerMove)
-    {
-    //Player played Rock
-    case 1:
-        //Rock vs Rock = Draw
-        if (*aiMove == 1) resultIndex = 0;
-        //Rock vs Paper = AI Win
-        if (*aiMove == 2) resultIndex = 2;
-        //Rock vs Scissors = Player Win
-        if (*aiMove == 3) resultIndex = 1;
-        break;
-
-    //Player played Paper
-    case 2:
-        //Paper vs Rock = Player Win
-        if (*aiMove == 1) resultIndex = 1;
-        //Paper vs Paper = Draw
-        if (*aiMove == 2) resultIndex = 0;
-        //Paper vs Scissors = AI Win
-        if (*aiMove == 3) resultIndex = 2;
-        break;
-
-    //Player played Scissors
-    case 3:
-        //Scissors vs Rock = AI Win
-        if (*aiMove == 1) resultIndex = 2;
-        //Scissors vs Paper = Player Win
-        if (*aiMove == 2) resultIndex = 1;
-        //Scissors vs Scissors = Draw
-        if (*aiMove == 3) resultIndex = 0;
-        break;
+    if (playerMove == 2) {
+        return aiMove == 1 ? Result::PlayerWon : Result::AIWon;
     }
-
-    return resultIndex;
 }
 
-static void runMatch(int* option, int* scorePlayer, int* scoreAI) 
+static void runMatch(int playerMove, int &scorePlayer, int &scoreAI) 
 {
     int aiMove = getAIMove();
-    int resultIndex = treatMoves(option, &aiMove);
+    Result matchResult = getMatchResult(playerMove, aiMove);
 
-    if (resultIndex == 1) 
-    {
-        (*scorePlayer)++;
-        std::cout << "Player wins!" << std::endl;
-    }
-    else if (resultIndex == 2) 
-    {
-        (*scoreAI)++;
-        std::cout << "AI wins!" << std::endl;
-    }
-    else 
-    {
+    if (matchResult == Result::Draw) {
         std::cout << "Oh, it's a draw..." << std::endl;
+    }
+    else {
+        if (matchResult == Result::PlayerWon) {
+            scorePlayer++;
+            std::cout << "Player wins!" << std::endl;
+        } 
+
+        if (matchResult == Result::AIWon) {
+            scoreAI++;
+            std::cout << "AI wins!" << std::endl;
+        }
     }
 
     std::cout << "\n";
@@ -195,7 +149,7 @@ int main()
 
         do
         {
-            printScore(&scorePlayer, &scoreAI);
+            printScore(scorePlayer, scoreAI);
             printMatchOptions();
 
             int option = getPlayerInput(3);
@@ -213,7 +167,7 @@ int main()
             }
             else 
             {
-                runMatch(&option, &scorePlayer, &scoreAI);
+                runMatch(option - 1, scorePlayer, scoreAI);
 
                 system("PAUSE");
                 clearScreen();
