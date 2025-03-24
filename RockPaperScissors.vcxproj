@@ -127,6 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.h" />
+    <ClCompile Include="InputManager.h" />
+    <ClCompile Include="PrintManager.h" />
     <ClCompile Include="RockPaperScissors.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
