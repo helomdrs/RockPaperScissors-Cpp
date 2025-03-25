@@ -8,39 +8,14 @@ int main()
     InputManager inputManager;
     GameManager gameManager(&inputManager, &printManager);
 
-    printManager.printHeader();
-    printManager.printMainMenu();
-    
-    if (gameManager.canInitGame()) {
-        printManager.clearScreen();
-        gameManager.isGameRunning = true;
+    gameManager.StartGame();
 
-        do
-        {
-            printManager.printScore(gameManager.scorePlayer, gameManager.scoreAI);
-            printManager.printMatchOptions();
+    if (!gameManager.CanInitGame()) return 0;
 
-            int option = inputManager.getPlayerInput(3);
+    while (gameManager.isGameRunning)
+    {
+        gameManager.Update();
+    };
 
-            if (option == 0)
-            {
-                gameManager.isGameRunning = false;
-                printManager.clearScreen();
-                printManager.printMainMenu();
-
-                if (gameManager.canInitGame()) {
-                    printManager.clearScreen();
-                    gameManager.isGameRunning = true;
-                }
-            }
-            else 
-            {
-                gameManager.runMatch(option - 1, gameManager.scorePlayer, gameManager.scoreAI);
-
-                system("PAUSE");
-                printManager.clearScreen();
-            }
-        } while (gameManager.isGameRunning);
-    }
     return 0;
 }
