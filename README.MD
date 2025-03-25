@@ -28,6 +28,10 @@ This project was made under the C++ special training made by and for Heloisa Med
 
 ## Version History
 
+* 0.5
+    * Project repage after senior revision;
+    * Code splitted between structs;
+    * See [commit change](https://github.com/helomdrs/RockPaperScissors-Cpp/commits/master/);
 * 0.4
     * Code cleanup and comments;
     * See [commit change](https://github.com/helomdrs/RockPaperScissors-Cpp/commits/master/);
